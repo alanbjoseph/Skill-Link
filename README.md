@@ -64,7 +64,7 @@ Skill Link is a cross-platform mobile application designed to connect individual
 ### 1️⃣ **Clone the Repository**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Skill-Link.git
+git clone https://github.com/alanbjoseph/Skill-Link.git
 cd Skill-Link
 ```
 
