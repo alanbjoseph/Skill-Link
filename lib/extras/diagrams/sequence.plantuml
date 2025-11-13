@@ -1,0 +1,64 @@
+@startuml Skill Link - Sequence Diagram (Task Lifecycle)
+
+actor "User (Poster)" as Poster
+actor "User (Tasker)" as Tasker
+
+participant "Flutter App\n(Frontend)" as App
+participant "Supabase Backend\n(Auth, DB, Storage)" as Supabase
+participant "Serverless / Edge Functions\n(Escrow & Payment Logic)" as Edge
+
+== Task Creation ==
+Poster -> App : Login / Register
+App -> Supabase : Verify credentials via Supabase Auth
+Supabase --> App : Auth token issued
+
+Poster -> App : Create New Task (title, desc, budget, location)
+App -> Supabase : Insert task details into PostgreSQL DB
+Supabase --> App : Task created successfully
+
+== Bidding Process ==
+Tasker -> App : Browse available tasks
+App -> Supabase : Fetch open tasks
+Supabase --> App : Return task listings
+
+Tasker -> App : Place Bid (amount, comment)
+App -> Supabase : Insert bid record linked to task
+Supabase --> App : Bid placed successfully
+
+Poster -> App : View Bids on Task
+App -> Supabase : Fetch all bids for selected task
+Supabase --> App : Return bid list
+Poster -> App : Select Winning Bid
+App -> Supabase : Update bid and task status (ASSIGNED)
+
+== Chat & Messaging ==
+Poster -> App : Open Chat with Tasker
+App -> Supabase : Fetch / create chat room (task_id)
+Tasker -> App : Send Message
+App -> Supabase : Store message in DB (realtime enabled)
+Supabase --> App : Trigger Realtime event
+App --> Poster : Display live message
+
+== Payment & Completion ==
+Poster -> App : Initiate Payment
+App -> Edge : Create payment intent (escrow)
+Edge -> Supabase : Record transaction (PENDING)
+Supabase --> Edge : Confirm record
+Edge --> App : Payment secured (ESCROW)
+
+Tasker -> App : Complete Task
+App -> Supabase : Update task status (COMPLETED)
+Poster -> App : Release Payment
+App -> Edge : Trigger escrow release
+Edge -> Supabase : Update transaction (RELEASED)
+Edge --> App : Payment released successfully
+
+== Rating & Review ==
+Poster -> App : Submit Rating & Review
+App -> Supabase : Insert rating into DB
+Supabase --> App : Confirmation
+
+App --> Poster : Show success message
+App --> Tasker : Display new rating in profile
+
+@enduml

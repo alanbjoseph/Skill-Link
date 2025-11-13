@@ -1,0 +1,45 @@
+@startuml Skill Link - Architecture Diagram
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam rectangle {
+    BackgroundColor #f9f9f9
+    BorderColor #444
+    FontSize 13
+}
+skinparam package {
+    BackgroundColor #f3f3f3
+    BorderColor #333
+    FontSize 14
+}
+
+' ============ CLIENT SIDE ============
+package "Flutter Mobile App" {
+    [User Interface\n(Task Feed, Bidding, Chat)] as ui
+    [State Management\n(Riverpod)] as state
+    [API Connector\n(Supabase SDK)] as connector
+}
+
+ui --> state
+state --> connector
+
+' ============ BACKEND SIDE ============
+package "Supabase Backend" {
+    [Authentication\n(User Accounts & Sessions)] as auth
+    [Database\n(PostgreSQL - Tasks, Bids, Chats, Ratings)] as db
+    [Storage\n(Images & Attachments)] as storage
+}
+
+connector --> auth : login / signup
+connector --> db : read / write
+connector --> storage : upload / download
+
+' ============ OPTIONAL LAYER ============
+package "Realtime Updates" {
+    [Realtime Service\n(Bidding & Chat Sync)] as realtime
+}
+
+db --> realtime
+realtime --> connector : live updates
+
+@enduml

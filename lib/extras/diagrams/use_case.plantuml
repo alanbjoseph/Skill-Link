@@ -1,0 +1,42 @@
+@startuml Skill Link - Use Case Diagram
+
+left to right direction
+
+actor "User\n(Poster / Tasker)" as User
+actor "System Admin" as Admin
+
+rectangle "Skill Link System" {
+  usecase "Register / Login" as UC1
+  usecase "Manage Profile" as UC2
+  usecase "Post Task" as UC3
+  usecase "Browse Tasks" as UC4
+  usecase "Place Bid" as UC5
+  usecase "Select Winning Bid" as UC6
+  usecase "Chat & Messaging" as UC7
+  usecase "Secure Payment" as UC8
+  usecase "Rate & Review" as UC9
+  usecase "View Ratings & History" as UC10
+  usecase "Manage Users" as UC11
+  usecase "Monitor Transactions" as UC12
+  usecase "Resolve Disputes" as UC13
+}
+
+' User relationships
+User -- UC1
+User -- UC2
+User -- UC3
+User -- UC4
+User -- UC5
+User -- UC6
+User -- UC7
+User -- UC8
+User -- UC9
+User -- UC10
+
+' Admin relationships
+UC10 -- Admin
+UC11 -- Admin
+UC12 -- Admin
+UC13 -- Admin
+
+@enduml

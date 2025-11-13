@@ -1,0 +1,51 @@
+Default Route (after login):
+context.go('/home');
+
+Switch to Tasker Flow:
+
+On your settings screen, show a switch like:
+
+SwitchListTile(
+  title: Text('Become a Tasker'),
+  value: isTasker,
+  onChanged: (value) async {
+    if (value) {
+      // Prompt for skills, ID verification, etc.
+      context.push('/tasker_setup');
+    } else {
+      // Maybe ask for confirmation before disabling
+    }
+  },
+);
+
+
+When they complete setup, update their profile:
+
+await supabase.from('profiles').update({
+  'is_tasker': true,
+  'skills': selectedSkills,
+  'bio': bio,
+}).eq('id', userId);
+
+🛡️ Add Server-Side Checks (Optional)
+
+You can restrict access to tasker-only features using Supabase Row Level Security (RLS) or Flutter-side checks:
+
+-- Only allow verified taskers to bid on tasks
+CREATE POLICY "Only verified taskers can bid"
+ON bids FOR INSERT
+USING (
+  exists (
+    SELECT 1 FROM profiles p
+    WHERE p.id = auth.uid()
+    AND p.is_tasker = true
+    AND p.is_tasker_verified = true
+  )
+);
+
+Feature	Recommendation
+Roles	- All users are posters by default
+Switching roles	- “Become a Tasker” toggle in settings
+Additional setup	- Collect skills, bio, verification
+DB Design	- Use booleans like is_tasker, verified
+Access control	- Add RLS or app-side checks

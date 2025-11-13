@@ -1,0 +1,65 @@
+@startuml
+!pragma layout smetana
+
+start
+
+:User opens Skill Link App;
+:Authenticate via Supabase Auth (Login / Signup);
+if (Authentication Successful?) then (Yes)
+  :Access Dashboard;
+else (No)
+  :Show Error Message;
+  stop
+endif
+
+partition "Poster Workflow" {
+  :Create New Task (title, description, budget, category);
+  :Upload optional images (Supabase Storage);
+  :Submit Task;
+  :Task saved in Supabase Database;
+  :Wait for Bids;
+}
+
+partition "Tasker Workflow" {
+  :Browse Available Tasks;
+  :View Task Details;
+  :Submit Bid (amount, note);
+  :Bid stored in Supabase Database;
+}
+
+partition "Poster Workflow" {
+  :View Incoming Bids;
+  if (Select a Winning Bid?) then (Yes)
+    :Assign Task to Tasker;
+    :Notify Tasker via Realtime (WebSocket);
+  else (No)
+    :Keep Task Open;
+  endif
+}
+
+' === Create a horizontal split here ===
+split
+  partition "Chat & Collaboration" {
+    :Open Chat Room (task-based);
+    :Exchange Messages via Supabase Realtime;
+    :Upload optional attachments (Supabase Storage);
+  }
+split again
+  partition "Payment Workflow" {
+    :Poster Initiates Payment;
+    :Edge Function creates Escrow Transaction;
+    :Funds held securely until completion;
+    :Tasker performs work;
+    :Poster marks task as Completed;
+    :Edge Function releases payment to Tasker;
+  }
+split again
+  partition "Feedback Workflow" {
+    :Poster provides Rating & Review;
+    :Data stored in Supabase Database;
+    :Tasker Profile Updated;
+  }
+endsplit
+
+stop
+@enduml

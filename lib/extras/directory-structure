@@ -1,0 +1,74 @@
+lib/
+├── main.dart             # Application entry point & Supabase initialization
+│
+├── core/                 # App-wide services, providers, and configurations
+│   ├── config/           # Environment variables (from .env), constants, theme
+│   │   ├── constants.dart
+│   │   └── theme.dart
+│   ├── providers/        # Top-level Riverpod providers (Supabase client, Auth state stream)
+│   │   └── supabase_providers.dart # Contains final supabaseClientProvider
+│   └── routes/           # Routing configuration (e.g., using GoRouter)
+│       └── app_router.dart
+│
+├── features/             # Business logic and UI for distinct app parts (Feature-First)
+│   ├── poster/                    # 👈 NEW: Poster-specific feature module
+│   │   ├── screens/
+│   │   │   └── poster_home.dart
+│   │   └── widgets/              # Optional: Poster-specific UI components
+│   │       └── poster_dashboard_card.dart
+│   │
+│   ├── tasker/                    # 👈 NEW: Tasker-specific feature module
+│   │   ├── screens/
+│   │   │   └── home.dart (single combined dashboard)
+│   │   ├── widgets/
+│   │   │   └── task_card.dart
+│   │   ├── models/               # Optional: Tasker-specific models
+│   │   └── providers/            # Optional: Tasker-specific state providers
+│   │       └── tasker_provider.dart
+│   ├── authentication/   # User signup, login, password reset
+│   │   ├── models/
+│   │   │   └── user_profile.dart
+│   │   ├── repositories/
+│   │   │   └── auth_repository.dart # Logic for Supabase.instance.client.auth
+│   │   ├── screens/
+│   │   │   ├── splash_screen.dart   # Handles Auth state changes
+│   │   │   ├── login_screen.dart
+│   │   │   └── signup_screen.dart
+│   │   └── providers/
+│   │       └── auth_provider.dart # Manages user session stream
+│   │
+│   ├── tasks/            # Job posting and browsing functionality
+│   │   ├── models/
+│   │   │   ├── task.dart
+│   │   │   └── bid.dart
+│   │   ├── repositories/
+│   │   │   └── tasks_repository.dart # Logic for Supabase.instance.client.from('tasks')
+│   │   ├── screens/
+│   │   │   ├── tasks_list_screen.dart
+│   │   │   ├── task_details_screen.dart
+│   │   │   └── post_task_screen.dart
+│   │   └── providers/
+│   │       ├── tasks_provider.dart
+│   │       └── bids_provider.dart
+│   │
+│   ├── chat/             # Real-time messaging
+│   │   ├── models/
+│   │   │   └── message.dart
+│   │   ├── repositories/
+│   │   │   └── chat_repository.dart # Handles Supabase Realtime Channels
+│   │   ├── screens/
+│   │   │   └── chat_screen.dart
+│   │   └── providers/
+│   │       └── chat_provider.dart
+│   │
+│   └── payments/         # UPI payment and transaction handling
+│       ├── services/
+│       │   └── upi_service.dart # Wraps the upi_pay plugin logic
+│       ├── screens/
+│       │   └── payment_screen.dart
+│       └── providers/
+│           └── payment_provider.dart
+│
+└── utils/                # Small, reusable helpers and extensions
+    ├── extensions.dart   # Flutter or Dart extensions
+    └── form_validators.dart # Reusable form validation functions
